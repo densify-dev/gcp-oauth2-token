@@ -1,5 +1,5 @@
 TRIM_PATH ?= $(shell realpath ..)
-LINTER_VERSION ?= v2.6.2
+LINTER_VERSION ?= v2.15.0
 TARGETARCH ?= amd64
 
 all: clean tools lint test build
