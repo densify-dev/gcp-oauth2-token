@@ -51,7 +51,7 @@ func tokenSource(ctx context.Context, googleServiceAccountKey, scope string) (ts
 			err = fmt.Errorf("empty Google service account key: %s", googleServiceAccountKey)
 		}
 		if err == nil {
-			creds, err = google.CredentialsFromJSON(ctx, serviceAccountKey, scope)
+			creds, err = google.CredentialsFromJSONWithType(ctx, serviceAccountKey, google.ServiceAccount, scope)
 		}
 	} else {
 		creds, err = google.FindDefaultCredentials(ctx, scope)
@@ -69,7 +69,8 @@ func validateEnvVars(logger zerolog.Logger) (tokenFile, googleServiceAccountKey 
 		err = fmt.Errorf("%s environment variable not set", tokenFileEnvVar)
 		return
 	}
-	_, infoErr := os.Stat(tokenFile)
+	// BEARER_TOKEN_FILE is a trusted, operator-configured output path.
+	_, infoErr := os.Stat(tokenFile) //nolint:gosec // G703: arbitrary output paths are intentional.
 	switch {
 	case infoErr == nil:
 		err = fmt.Errorf("%s file already exists", tokenFile)
